@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Содержание рабочего каталога</title>
+</head>
+<body>
+    <h1>Содержание рабочего каталога</h1>
+    {% for file in workdir_list %}
+        <p>{{file}}</p>
+    {% endfor %}
+</body>
+</html>
