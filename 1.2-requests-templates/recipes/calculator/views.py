@@ -16,15 +16,54 @@ DATA = {
         'сыр, ломтик': 1,
         'помидор, ломтик': 1,
     },
-    # можете добавить свои рецепты ;)
+    'supchik': {
+        'бульон, л': 2,
+        'картофель, кг': 0.3,
+        'морковь, кг': 0.2,
+        'лапша, кг': 0.4,
+        'лавровый лист, шт': 1,
+    }
 }
 
-# Напишите ваш обработчик. Используйте DATA как источник данных
-# Результат - render(request, 'calculator/index.html', context)
-# В качестве контекста должен быть передан словарь с рецептом:
-# context = {
-#   'recipe': {
-#     'ингредиент1': количество1,
-#     'ингредиент2': количество2,
-#   }
-# }
+
+def recipe(request):
+    context = {
+        'recipes': [meal for meal in DATA]
+    }
+    return render(request, 'calculator/recipes.html', context)
+
+
+def omlet(request):
+    servings = int(request.GET.get('servings', 1))
+    recipe = {product: amount * servings for product, amount in DATA.get('omlet').items()}
+    context = {
+        'recipe': recipe,
+    }
+    return render(request, 'calculator/index.html', context)
+
+
+def pasta(request):
+    servings = int(request.GET.get('servings', 1))
+    recipe = {product: amount * servings for product, amount in DATA.get('pasta').items()}
+    context = {
+        'recipe': recipe,
+    }
+    return render(request, 'calculator/index.html', context)
+
+
+def buter(request):
+    servings = int(request.GET.get('servings', 1))
+    recipe = {product: amount * servings for product, amount in DATA.get('buter').items()}
+    context = {
+        'recipe': recipe,
+    }
+    return render(request, 'calculator/index.html', context)
+
+
+def supchik(request):
+    servings = int(request.GET.get('servings', 1))
+    recipe = {product: amount * servings for product, amount in DATA.get('supchik').items()}
+    context = {
+        'recipe': recipe,
+    }
+    return render(request, 'calculator/index.html', context)
