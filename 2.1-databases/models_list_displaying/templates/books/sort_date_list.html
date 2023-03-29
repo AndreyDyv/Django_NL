@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Сортировка книг по дате{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="header">
+            <h1><a href="/books">Каталог</a></h1>
+        </div>
+        <div class="row">
+            {% for book in books %}
+            <div class="book col-md-4">
+                <h2> {{ book.name }} </h2>
+                <p>Дата: {{ book.pub_date|date:'Y-m-d' }} </p>
+                <p>Автор: {{ book.author }} </p>
+            </div>
+            {% endfor %}
+        </div>
+        {% if date_before %}
+            <a class="button button-primary" href="../{{ date_before }}">⟵ {{ date_before }}</a>
+        {% endif %}
+
+        {% if date_after %}
+            <a class="button button-primary" href="../{{ date_after }}">{{ date_after }} ⟶</a>
+        {% endif %}
+    </div>
+{% endblock %}
