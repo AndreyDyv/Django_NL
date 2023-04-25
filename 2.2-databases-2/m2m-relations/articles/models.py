@@ -41,5 +41,6 @@ class Scope(models.Model):
         constraints = [
             models.UniqueConstraint(fields=('tags', 'articles'), name='main-tag')
         ]
+        ordering = ['-is_main', 'tags']
 
 
