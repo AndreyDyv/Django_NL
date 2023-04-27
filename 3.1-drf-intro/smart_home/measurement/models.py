@@ -1,14 +1,19 @@
 from django.db import models
 
-# TODO: опишите модели датчика (Sensor) и измерения (Measurement)
 class Sensor(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField()
-    pass
+    name = models.CharField(max_length=100, verbose_name='Датчик')
+    description = models.TextField(null=True, blank=True, verbose_name='Описание')
+
+    def __str__(self):
+        return self.name
 
 
 class Measurement(models.Model):
-    temperature = models.FloatField()
-    created_at = models.DateTimeField()
-    pass
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name='measurement')
+    temperature = models.FloatField(verbose_name='Температура датчика')
+    created_at = models.DateTimeField(verbose_name='Время измерения')
+    image = models.ImageField(null=True, blank=True, verbose_name='Изображение')
+
+    def __str__(self):
+        return self.temperature
 
