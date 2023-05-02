@@ -16,4 +16,4 @@ class Measurement(models.Model):
     image = models.ImageField(null=True, blank=True, verbose_name='Изображение')
 
     def __str__(self):
-        return self.temperature
+        return str(self.temperature)
