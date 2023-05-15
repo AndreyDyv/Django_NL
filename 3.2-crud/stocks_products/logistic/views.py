@@ -16,15 +16,13 @@ class ProductViewSet(ModelViewSet):
 
     pagination_class = PageNumberPagination
 
-    # при необходимости добавьте параметры фильтрации
-
 
 class StockViewSet(ModelViewSet):
     queryset = Stock.objects.all()
     serializer_class = StockSerializer
 
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['products',]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['products', ]
+    search_fields = ['products__title', 'products__description']
 
     pagination_class = PageNumberPagination
-    # при необходимости добавьте параметры фильтрации
