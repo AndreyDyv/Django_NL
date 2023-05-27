@@ -3,7 +3,7 @@ from django_filters import DateFromToRangeFilter
 from advertisements.models import Advertisement
 
 
-class AdvertisementFilter(filters.FilterSet, filters.DjangoFilterBackend):
+class AdvertisementFilter(filters.FilterSet):
     """Фильтры для объявлений."""
     created_at = DateFromToRangeFilter()
     updated_at = DateFromToRangeFilter()
