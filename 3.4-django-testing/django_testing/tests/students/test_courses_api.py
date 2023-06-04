@@ -1,7 +1,8 @@
 import pytest
 from django.urls import reverse
 from model_bakery import baker
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND, \
+    HTTP_400_BAD_REQUEST
 from rest_framework.test import APIClient
 
 from students.models import Course, Student
@@ -27,6 +28,11 @@ def student_factory():
 
     return factory
 
+
+@pytest.fixture
+def test_with_specific_settings(settings):
+    settings.MAX_STUDENTS_PER_COURSE = 3
+    assert settings.MAX_STUDENTS_PER_COURSE
 
 # 1 проверка получения первого курса (retrieve-логика)
 @pytest.mark.django_db
@@ -107,3 +113,28 @@ def test_delete_course(client, course_factory):
     assert response.status_code == HTTP_204_NO_CONTENT
     response = client.get(url)
     assert response.status_code == HTTP_404_NOT_FOUND
+
+
+# 8 тест валидации студентов на курсе
+@pytest.mark.parametrize(
+    ['students_on_course', 'expected_status'],
+    (('3', HTTP_201_CREATED),
+    ('4', HTTP_400_BAD_REQUEST),
+    ('20', HTTP_400_BAD_REQUEST),
+    ('21', HTTP_400_BAD_REQUEST),)
+    )
+
+@pytest.mark.django_db
+def test_students_on_course_validation(client, course_factory, student_factory,
+                                       students_on_course, expected_status,
+                                       test_with_specific_settings):
+    course = course_factory()
+    students = student_factory(_quantity=3)
+    url = reverse('courses-list')
+    data_payload = {
+        'course': course.pk,
+        'students_on_course': students_on_course,
+    }
+    response = client.post(url, data_payload)
+    assert response.status_code == expected_status
+    ...
