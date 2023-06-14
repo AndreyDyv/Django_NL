@@ -34,15 +34,16 @@ def test_with_specific_settings(settings):
     settings.MAX_STUDENTS_PER_COURSE = 3
     assert settings.MAX_STUDENTS_PER_COURSE
 
+
 # 1 проверка получения первого курса (retrieve-логика)
 @pytest.mark.django_db
 def test_get_course(client, course_factory):
-    course = course_factory()
-    url = reverse('courses-list')
+    course = course_factory(_quantity=1)
+    url = reverse('courses-detail', args=[course[0].pk])
     response = client.get(url)
 
     assert response.status_code == HTTP_200_OK
-    assert course.id
+    assert course[0].pk
 
 
 # 2 проверка получения списка курсов (list-логика)
@@ -119,11 +120,10 @@ def test_delete_course(client, course_factory):
 @pytest.mark.parametrize(
     ['students_on_course', 'expected_status'],
     (('3', HTTP_201_CREATED),
-    ('4', HTTP_400_BAD_REQUEST),
-    ('20', HTTP_400_BAD_REQUEST),
-    ('21', HTTP_400_BAD_REQUEST),)
-    )
-
+     ('4', HTTP_400_BAD_REQUEST),
+     ('20', HTTP_400_BAD_REQUEST),
+     ('21', HTTP_400_BAD_REQUEST),)
+)
 @pytest.mark.django_db
 def test_students_on_course_validation(client, course_factory, student_factory,
                                        students_on_course, expected_status,
@@ -131,10 +131,10 @@ def test_students_on_course_validation(client, course_factory, student_factory,
     course = course_factory()
     students = student_factory(_quantity=3)
     url = reverse('courses-list')
-    data_payload = {
-        'course': course.pk,
-        'students_on_course': students_on_course,
+    data = {
+        'name': course.name,
+        'students': students_on_course,
+        # 'students': [student.pk for student in students],
     }
-    response = client.post(url, data_payload)
+    response = client.post(url, data=data)
     assert response.status_code == expected_status
-    ...
