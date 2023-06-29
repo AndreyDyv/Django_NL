@@ -119,22 +119,21 @@ def test_delete_course(client, course_factory):
 # 8 тест валидации студентов на курсе
 @pytest.mark.parametrize(
     ['students_on_course', 'expected_status'],
-    (('3', HTTP_201_CREATED),
-     ('4', HTTP_400_BAD_REQUEST),
-     ('20', HTTP_400_BAD_REQUEST),
-     ('21', HTTP_400_BAD_REQUEST),)
+    ((3, HTTP_201_CREATED),
+     (4, HTTP_400_BAD_REQUEST),
+     (20, HTTP_400_BAD_REQUEST),
+     (21, HTTP_400_BAD_REQUEST),)
 )
 @pytest.mark.django_db
 def test_students_on_course_validation(client, course_factory, student_factory,
                                        students_on_course, expected_status,
                                        test_with_specific_settings):
     course = course_factory()
-    students = student_factory(_quantity=3)
+    students = student_factory(_quantity=students_on_course)
     url = reverse('courses-list')
     data = {
         'name': course.name,
-        'students': students_on_course,
-        # 'students': [student.pk for student in students],
+        'students': [student.pk for student in students],
     }
     response = client.post(url, data=data)
     assert response.status_code == expected_status
